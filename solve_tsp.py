@@ -3,8 +3,8 @@ from numpy.random import choice as np_choice
 
 # -------------------------------------- Н А С Т Р О Й К И -------------------------------------- #
 
-ITERATIONS = 50
-ANTS_AMOUNT = 0.1  # На какое число умножить количество вершин чтобы получить количество муравьев
+ITERATIONS = 500
+ANTS_AMOUNT = 0.5  # На какое число умножить количество вершин чтобы получить количество муравьев
 BEST_ANTS_AMOUNT = 0.5  # Какую долю лучших муравьев брать для откладывания феромона
 DECAY = 0.95  # На какое число умножаются все феромоны после каждой итерации
 PHEROMONE_WEIGHT = 0.3  # Доля феромона в принятии решения муравьем (доля дистанции будет 1 - PHEROMONE_WEIGHT)
@@ -35,7 +35,7 @@ class AntColony:
             all_paths = self.gen_all_paths()
             self.spread_pheronome(all_paths, self.n_best, shortest_path=shortest_path)
             shortest_path = min(all_paths, key=lambda x: x[1])
-            print(shortest_path[1])
+            # print(shortest_path[1])
             if shortest_path[1] < all_time_shortest_path[1]:
                 all_time_shortest_path = shortest_path
             self.pheromone = self.pheromone * self.decay

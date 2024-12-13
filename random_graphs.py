@@ -7,10 +7,10 @@ import matplotlib.pyplot as plt
 
 # --------------------------- Н А С Т Р О Й К И --------------------------- #
 
-NUMBER_OF_GRAPHS_FOR_EACH_N = 10  # На скольки графах запускать алгоритм для каждого количества вершин
+NUMBER_OF_GRAPHS_FOR_EACH_N = 3  # На скольки графах запускать алгоритм для каждого количества вершин
 MAX_N = 500  # До скольки доводить количество вершин
 N_STEP = 5  # Шаг количества вершин
-WEIGHTS_RANGE = (1, 100)  # Диапазон из которого выбираются веса
+WEIGHTS_RANGE = (1, 100)  # Диапазон из которого выбираются веса 143 309 518
 
 # ------------------------------------------------------------------------- #
 
@@ -18,35 +18,16 @@ np.random.seed(8)
 
 
 def fast_generate_random_graph(_n):
-    # Генерация случайной матрицы плотности
-    random_matrix = np.random.rand(_n, _n)
     weights = np.random.randint(*WEIGHTS_RANGE, (_n, _n))  # веса рёбер
 
-    # Применяем веса к рёбрам в соответствии с плотностью
-    _matrix = np.where(random_matrix, weights, 0)
-
     # Симметризация матрицы, чтобы граф был неориентированным
-    _matrix = np.triu(_matrix)  # оставляем верхний треугольник
+    _matrix = np.triu(weights)  # оставляем верхний треугольник
     _matrix += _matrix.T - np.diag(_matrix.diagonal())  # симметризация
 
     _matrix = _matrix.astype(float)
 
     # Заполняем главную диагональ значениями np.inf
     np.fill_diagonal(_matrix, np.inf)
-
-    return _matrix
-
-
-def generate_random_graph(_n):
-    # n - количество узлов
-
-    _matrix = np.zeros((_n, _n), dtype=int)
-
-    for i in range(_n):
-        for j in range(i + 1, _n):
-            weight = random.randint(1, 10)
-            _matrix[i][j] = weight
-            _matrix[j][i] = weight  # для симметрии графа
 
     return _matrix
 
@@ -88,15 +69,17 @@ def show_graph(_m, red_edges=None):
 # show_graph(matrix, shortest_path)
 
 
-# for n in range(N_STEP, MAX_N + 1, N_STEP):
-#     start = time.time()
-#     for _ in range(0, NUMBER_OF_GRAPHS_FOR_EACH_N):
-#         matrix = fast_generate_random_graph(n)
-#         AntColony(matrix).run()
-#     print(f"Решение для {n} вершин заняло {time.time()-start} секунд")
-
-matrix = fast_generate_random_graph(500)
-# print(matrix)
+matrix = fast_generate_random_graph(10)
 shortest = AntColony(matrix).run()
-print("Самый короткий:", shortest[1])
-# show_graph(matrix, shortest[0])
+show_graph(matrix, shortest[0])
+
+
+for n in range(max(N_STEP, 4), MAX_N + 1, N_STEP):
+    start = time.time()
+    for _ in range(0, NUMBER_OF_GRAPHS_FOR_EACH_N):
+        matrix = fast_generate_random_graph(n)
+        AntColony(matrix).run()
+    print(f"{n} \t {str((time.time() - start) / NUMBER_OF_GRAPHS_FOR_EACH_N).replace(".", ",")}")
+
+
+
